@@ -34,7 +34,7 @@ export function QuickActionCard({
         <Button
           variant={"outline"}
           size={"xs"}
-          className="w-fit"
+          className="w-fit mt-2"
           asChild
         >
           <Link href={href}>
