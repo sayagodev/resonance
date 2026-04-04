@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
-import { TEXT_MAX_LEGTH } from "@/features/text-to-speech/data/constants";
+import { COST_PER_UNIT, TEXT_MAX_LEGTH } from "@/features/text-to-speech/data/constants";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -44,7 +44,7 @@ export function TextInputPanel() {
                 ) : (
                   <>
                     <span className="tabular-nums">
-                      ${(text.length * 0.0003).toFixed(4)}
+                      ${(text.length * COST_PER_UNIT).toFixed(4)}
                     </span>{" "}
                     estimado
                   </>
