@@ -3,7 +3,7 @@
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-export function HealtCheck() {
+export function HealthCheck() {
   const trpc = useTRPC()
   const { data } = useSuspenseQuery(trpc.health.queryOptions())
 

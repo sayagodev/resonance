@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { PrismaPg } from "@prisma/adapter-pg";
 import {
+  DeleteObjectCommand,
   PutObjectCommand,
   S3Client,
   type PutObjectCommandInput,
@@ -186,6 +187,7 @@ async function seedSystemVoice(name: string) {
   const existingSystemVoice = await prisma.voice.findFirst({
     where: {
       variant: "SYSTEM",
+      orgId: null,
       name,
     },
     select: { id: true },
@@ -251,13 +253,23 @@ async function seedSystemVoice(name: string) {
       },
     });
   } catch (error) {
+
+    await r2
+      .send(
+        new DeleteObjectCommand({
+          Bucket: env.R2_BUCKET_NAME,
+          Key: r2ObjectKey,
+        }),
+      )
+      .catch(() => { });
+
     await prisma.voice
       .delete({
         where: {
           id: voice.id,
         },
       })
-      .catch(() => {});
+      .catch(() => { });
 
     throw error;
   }
