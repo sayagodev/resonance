@@ -108,7 +108,7 @@ export function DashboardSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex flex-col gap-4 pt-4">
-        <div className="flex items-center gap-2 pl-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
+        <div className="flex items-center gap-2 pl-1">
           <Image
             src="/logo.svg"
             alt="Resonance"
@@ -130,7 +130,7 @@ export function DashboardSidebar() {
               }
               appearance={{
                 elements: {
-                  rootBox: "w-full! group-data-[collapsible=icon]:w-auto! group-data-[collapsible=icon]:flex! group-data-[collapsible=icon]:justify-center!",
+                  rootBox: "w-full! group-data-[collapsible=icon]:w-auto! group-data-[collapsible=icon]:flex!",
                   organizationSwitcherTrigger: "w-full! justify-between! bg-white! border! border-border! rounded-md! pl-1! pr-2! py-1! gap-3! group-data-[collapsible=icon]:w-auto! group-data-[collapsible=icon]:p-1! shadow-[0px_1px_1.5px_0px_rgba(44,54,53,0.03)] outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50",
                   organizationPreview: "gap-2!",
                   organizationPreviewAvatarBox: "size-6! rounded-sm!",
