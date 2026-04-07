@@ -70,7 +70,7 @@ export const voicesRouter = createTRPCRouter({
   delete: orgProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const voice = await prisma.voice.findUnique({
+      const voice = await prisma.voice.findFirst({
         where: {
           id: input.id,
           variant: "CUSTOM",
@@ -86,10 +86,23 @@ export const voicesRouter = createTRPCRouter({
         })
       }
 
-      await prisma.voice.delete({ where: { id: voice.id } })
+      const { count } = await prisma.voice.deleteMany({
+        where: {
+          id: input.id,
+          variant: "CUSTOM",
+          orgId: ctx.orgId,
+        }
+      })
+
+      if (count === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Voice not found",
+        })
+      }
 
       // To improve this, we can put this in a background job with automatic retries.
-      // Or a cron job scaning for orphan r2Objects
+      // Or in a cron job scaning for orphan r2Objects
       if (voice.r2ObjectKey) {
         await deleteAudio(voice.r2ObjectKey).catch(() => { });
       }
