@@ -108,6 +108,7 @@ export function DashboardSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex flex-col gap-4 pt-4">
+      <Link href={"/"}>
         <div className="flex items-center gap-2 pl-1">
           <Image
             src="/logo.svg"
@@ -121,6 +122,7 @@ export function DashboardSidebar() {
           </span>
           <SidebarTrigger className="ml-auto lg:hidden" />
         </div>
+        </Link>
         <SidebarMenu>
           <SidebarMenuItem>
             <OrganizationSwitcher
