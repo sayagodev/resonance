@@ -10,6 +10,7 @@ export default async function TextToSpeechDetailPage({
 
   await Promise.all([
     prefetch(trpc.generations.getById.queryOptions({ id: generationId })),
+    prefetch(trpc.generations.getAll.queryOptions()),
     prefetch(trpc.voices.getAll.queryOptions()),
   ]);
 
