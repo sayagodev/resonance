@@ -72,6 +72,9 @@ export function VoiceSelector() {
                     `
                   }
                 </span>
+                <span className="text-[10px] font-semibold border border-black px-1 rounded-full">
+                  <p className="-translate-y-px">{currentVoice.category && currentVoice.language}</p>
+                </span>
               </>
             )}
           </SelectValue>
@@ -126,6 +129,13 @@ export function VoiceSelector() {
                   <span className="truncate text-sm font-medium">
                     {v.name} - {VOICE_CATEGORY_LABELS[v.category]}
                   </span>
+                  {selectedVoice?.id === v.id ? (
+                    <span className="text-[10px] font-semibold border border-black px-1 rounded-full">
+                      <p className="-translate-y-px">{v.language}</p>
+                    </span>
+                  ) : (
+                    <p className="text-[12px]">{v.language}</p>
+                  )}
                 </SelectItem>
               ))}
             </SelectGroup>
