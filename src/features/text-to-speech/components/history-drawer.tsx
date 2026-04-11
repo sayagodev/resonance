@@ -14,7 +14,7 @@ export function HistoryDrawer() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant={"outline"} size={"sm"}>
+        <Button variant={"outline"} size={"sm"} aria-label="Abrir historial">
           <History className="size-4" />
         </Button>
       </DrawerTrigger>
