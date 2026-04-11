@@ -1,4 +1,5 @@
-import z from "zod";
+import * as Sentry from "@sentry/nextjs";
+import z, { unknown } from "zod";
 import { TEXT_MAX_LEGTH } from "@/features/text-to-speech/data/constants";
 import { TRPCError } from "@trpc/server";
 import { chatterbox } from "@/lib/chatterbox-client";
@@ -53,6 +54,7 @@ export const generationsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+
       const voice = await prisma.voice.findFirst({
         where: {
           id: input.voiceId,
@@ -94,6 +96,12 @@ export const generationsRouter = createTRPCRouter({
         },
         parseAs: "arrayBuffer",
       });
+
+      Sentry.logger.info("Generation started", {
+        orgId: ctx.orgId,
+        voiceId: input.voiceId,
+        textLength: input.text.length,
+      })
 
       if (error) {
         throw new TRPCError({
@@ -138,6 +146,11 @@ export const generationsRouter = createTRPCRouter({
           data: { r2ObjectKey },
         });
 
+        Sentry.logger.info("Audio generated", {
+          orgId: ctx.orgId,
+          generationId: generation.id,
+        })
+
       } catch {
 
         if (generationId) {
@@ -150,6 +163,11 @@ export const generationsRouter = createTRPCRouter({
             })
             .catch(() => { });
         }
+
+        Sentry.logger.error("Generation failed", {
+          orgId: ctx.orgId,
+          voiceId: input.voiceId,
+        })
 
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
