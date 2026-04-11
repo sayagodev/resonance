@@ -19,7 +19,6 @@ export function VoiceSelectorButton() {
   const voiceId = useStore(form.store, (s) => s.values.voiceId);
 
   const currentVoice = allVoices.find((v) => v.id === voiceId) ?? allVoices[0];
-
   const buttonLabel = currentVoice?.name ?? "Selecciona una voz";
 
   return (
