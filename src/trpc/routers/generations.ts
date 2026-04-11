@@ -53,7 +53,7 @@ export const generationsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const voice = await prisma.voice.findUnique({
+      const voice = await prisma.voice.findFirst({
         where: {
           id: input.voiceId,
           OR: [

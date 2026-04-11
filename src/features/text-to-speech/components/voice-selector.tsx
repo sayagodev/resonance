@@ -23,7 +23,6 @@ import { VoiceAvatar } from "@/components/voice-avatar/voice-avatar";
 import { useTTSVoices } from "../contexts/tts-voices-context";
 import { ttsFormOptions } from "./text-to-speech-form";
 import { useStore } from "@tanstack/react-form";
-import { custom } from "zod";
 
 export function VoiceSelector() {
   const {
@@ -73,7 +72,7 @@ export function VoiceSelector() {
                   }
                 </span>
                 <span className="text-[10px] font-semibold border border-black px-1 rounded-full">
-                  <p className="-translate-y-px">{currentVoice.category && currentVoice.language}</p>
+                  <span className="-translate-y-px inline-block">{currentVoice.category && currentVoice.language}</span>
                 </span>
               </>
             )}
@@ -131,10 +130,10 @@ export function VoiceSelector() {
                   </span>
                   {selectedVoice?.id === v.id ? (
                     <span className="text-[10px] font-semibold border border-black px-1 rounded-full">
-                      <p className="-translate-y-px">{v.language}</p>
+                      <span className="-translate-y-px inline-block">{v.language}</span>
                     </span>
                   ) : (
-                    <p className="text-[12px]">{v.language}</p>
+                    <span className="text-[12px]">{v.language}</span>
                   )}
                 </SelectItem>
               ))}

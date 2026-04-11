@@ -37,6 +37,14 @@ export function useWaveSurfer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  const onReadyRef = useRef(onReady);
+  const onErrorRef = useRef(onError);
+
+  useEffect(() => {
+    onReadyRef.current = onReady;
+    onErrorRef.current = onError;
+  });
+
   useEffect(() => {
     if (!containerRef.current || !url) return;
 
@@ -69,7 +77,7 @@ export function useWaveSurfer({
 
       // Catch NotAllowedError when browser blocks autoplay without user interaction
       if (autoplay) ws.play().catch(() => {});
-      onReady?.();
+      onReadyRef.current?.();
     });
 
     ws.on("play", () => setIsPlaying(true));
@@ -80,7 +88,7 @@ export function useWaveSurfer({
     ws.on("error", (error) => {
       if (destroyed) return;
       console.error("WaveSurfer error:", error);
-      onError?.(new Error(String(error)));
+      onErrorRef.current?.(new Error(String(error)));
     });
 
     ws.load(url).catch((error) => {
@@ -93,7 +101,7 @@ export function useWaveSurfer({
       destroyed = true;
       ws.destroy();
     };
-  }, [url, autoplay, onReady, onError, isMobile]);
+  }, [url, autoplay]);
 
   const togglePlayPause = useCallback(() => {
     wavesurferRef.current?.playPause();

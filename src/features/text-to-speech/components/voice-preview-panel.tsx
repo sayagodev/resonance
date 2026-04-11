@@ -115,7 +115,7 @@ export function VoicePreviewPanel({
               {text}
             </p>
             {selectedVoiceName && (
-              <div className="flex items-center gap-1 text-xs tex-muted-foreground">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <VoiceAvatar
                   seed={selectedVoiceSeed ?? selectedVoiceName}
                   name={selectedVoiceName}
