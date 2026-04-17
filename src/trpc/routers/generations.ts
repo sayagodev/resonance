@@ -104,9 +104,18 @@ export const generationsRouter = createTRPCRouter({
       })
 
       if (error) {
+        Sentry.logger.error("Generation failed", {
+          orgId: ctx.orgId,
+          voiceId: input.voiceId,
+          textLength: input.text.length,
+          error: error,
+        })
+      }
+
+      if (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to generate audio",
+          message: `Failed to generate audio ${error}`,
         })
       }
 

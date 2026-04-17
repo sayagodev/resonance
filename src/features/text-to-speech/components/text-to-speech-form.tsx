@@ -62,12 +62,12 @@ export function TextToSpeechForm({
           repetitionPenalty: value.repetitionPenalty,
         });
 
-        toast.success("Audio generated successfully!");
+        toast.success("¡Audio generado exitosamente!");
         router.push(`/text-to-speech/${data.id}`);
 
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Failed to generate audio";
+          error instanceof Error ? error.message : "Error al generar el audio";
 
         toast.error(message);
       }

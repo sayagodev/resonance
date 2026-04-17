@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -35,9 +36,12 @@ export default function RootLayout({
         <html lang="es">
           <body
             className={`${inter.variable} ${geistMono.variable} antialiased`}
+            suppressHydrationWarning
           >
             <TooltipProvider>
-              {children}
+              <NuqsAdapter>
+                {children}
+              </NuqsAdapter>
             </TooltipProvider>
             <Toaster />
           </body>
