@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 
 import { VOICE_CATEGORIES } from "@/features/voices/data/voice-categories";
 import { prisma } from "@/lib/db";
-import { uploadAudio } from "@/lib/r2";
+import { deleteAudio, uploadAudio } from "@/lib/r2";
 
 import type { VoiceCategory } from "@/generated/prisma/client";
 
@@ -99,6 +99,7 @@ export async function POST(request: Request) {
   }
 
   let createdVoiceId: string | null = null;
+  let uploadedObjectKey: string | null = null;
 
   try {
     const voice = await prisma.voice.create({
@@ -123,6 +124,7 @@ export async function POST(request: Request) {
       key: r2ObjectKey,
       contentType: normalizedContentType,
     })
+    uploadedObjectKey = r2ObjectKey
 
     await prisma.voice.update({
       where: {
@@ -134,6 +136,11 @@ export async function POST(request: Request) {
     })
 
   } catch {
+
+    if (uploadedObjectKey) {
+      await deleteAudio(uploadedObjectKey).catch(() => { })
+    }
+
     if (createdVoiceId) {
       await prisma.voice.delete({
         where: { id: createdVoiceId },

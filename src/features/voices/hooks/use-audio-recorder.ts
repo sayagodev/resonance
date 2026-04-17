@@ -44,6 +44,12 @@ export function useAudioRecorder() {
   }, [destroyWaveSurfer]);
 
   useEffect(() => {
+    return () => {
+      cleanup();
+    }
+  }, [cleanup])
+
+  useEffect(() => {
     if (!isRecording || !containerRef.current || !streamRef.current) return;
 
     const ws = WaveSurfer.create({

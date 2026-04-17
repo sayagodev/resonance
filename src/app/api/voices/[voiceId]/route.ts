@@ -35,8 +35,13 @@ export async function GET(
     return new Response("Voice audio is not available yet", { status: 409 })
   }
 
-  const signedUrl = await getSignedAudioUrl(voice.r2ObjectKey)
-  const audioResponse = await fetch(signedUrl);
+  let audioResponse: Response;
+  try {
+    const signedUrl = await getSignedAudioUrl(voice.r2ObjectKey)
+    audioResponse = await fetch(signedUrl);
+  } catch {
+    return new Response("Failed to fetch voice audio", { status: 502 })
+  }
 
   if (!audioResponse.ok) {
     return new Response("Failed to fech voice audio", { status: 502 })
