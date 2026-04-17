@@ -10,6 +10,7 @@ import {
   InputGroupAddon,
 } from "@/components/ui/input-group";
 import { voicesSearchParams } from "../lib/params";
+import { VoiceCreateDialog } from "./voice-create-dialog";
 
 export function VoicesToolbar() {
   const [query, setQuery] = useQueryState(
@@ -49,16 +50,20 @@ export function VoicesToolbar() {
             </InputGroupInput>
           </InputGroup>
           <div className="ml-auto hidden lg:block">
-            <Button size="sm">
-              <Sparkles />
-              Voces personalizadas
-            </Button>
+            <VoiceCreateDialog>
+              <Button size="sm">
+                <Sparkles />
+                Voces personalizadas
+              </Button>
+            </VoiceCreateDialog>
           </div>
           <div className="lg:hidden">
-            <Button size="sm" className="w-full">
-              <Sparkles />
-              Voces personalizadas
-            </Button>
+            <VoiceCreateDialog>
+              <Button size="sm" className="w-full">
+                <Sparkles />
+                Voces personalizadas
+              </Button>
+            </VoiceCreateDialog>
           </div>
         </div>
       </div>

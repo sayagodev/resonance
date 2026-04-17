@@ -112,6 +112,7 @@ export function VoiceSelector() {
                   <span className="truncate text-sm font-medium">
                     {v.name} - {VOICE_CATEGORY_LABELS[v.category]}
                   </span>
+                  <span className="text-[12px]">{v.language}</span>
                 </SelectItem>
               ))}
             </SelectGroup>

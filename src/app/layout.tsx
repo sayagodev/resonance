@@ -36,6 +36,7 @@ export default function RootLayout({
         <html lang="es">
           <body
             className={`${inter.variable} ${geistMono.variable} antialiased`}
+            suppressHydrationWarning
           >
             <TooltipProvider>
               <NuqsAdapter>
