@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/trpc/client";
 import { z } from "zod";
+import { useCheckout } from "@/features/billing/hooks/use-checkout";
 
 const ttsFormSchema = z.object({
   text: z.string().min(1, "Ingresa algo de texto"),
@@ -22,10 +23,10 @@ export type TTSFormValues = z.infer<typeof ttsFormSchema>;
 export const defaultTTSValues: TTSFormValues = {
   text: "",
   voiceId: "",
-  temperature: 0.8,
-  topP: 0.95,
-  topK: 1000,
-  repetitionPenalty: 1.2,
+  temperature: 0.35,
+  topP: 0.8,
+  topK: 50,
+  repetitionPenalty: 1.1,
 }
 
 export const ttsFormOptions = formOptions({
@@ -44,6 +45,8 @@ export function TextToSpeechForm({
   const createMutation = useMutation(
     trpc.generations.create.mutationOptions({}),
   );
+
+  const { checkout } = useCheckout()
 
   const form = useAppForm({
     ...ttsFormOptions,
@@ -69,7 +72,16 @@ export function TextToSpeechForm({
         const message =
           error instanceof Error ? error.message : "Error al generar el audio";
 
-        toast.error(message);
+        if (message === "SUBSCRIPTION_REQUIRED") {
+          toast.error("Es necesario una suscripción", {
+            action: {
+              label: "Suscribirse",
+              onClick: () => checkout(),
+            }
+          })
+        } else {
+          toast.error(message)
+        }
       }
     },
   })

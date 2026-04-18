@@ -1,4 +1,6 @@
+import * as Sentry from "@sentry/nextjs";
 import z from "zod";
+import { polar } from "@/lib/polar";
 import { parseBuffer } from "music-metadata";
 import { auth } from "@clerk/nextjs/server";
 
@@ -23,6 +25,22 @@ export async function POST(request: Request) {
 
   if (!userId || !orgId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  // Check for active subscription before voice creation
+  try {
+    const customerState = await polar.customers.getStateExternal({
+      externalId: orgId,
+    })
+
+    const hasActiveSubscription =
+      (customerState.activeSubscriptions ?? []).length > 0;
+
+    if (!hasActiveSubscription) {
+      return Response.json({ error: "SUBSCRIPTION_REQUIRED" }, { status: 403 })
+    }
+  } catch {
+    return Response.json({ error: "SUBSCRIPTION_REQUIRED" }, { status: 403 })
   }
 
   const url = new URL(request.url)
@@ -151,6 +169,24 @@ export async function POST(request: Request) {
       { error: "Error al crear la voz. Por favor reintente." },
       { status: 500 },
     )
+  }
+
+  try {
+    await polar.events.ingest({
+      events: [
+        {
+          name: "voice_creation",
+          externalCustomerId: orgId,
+          metadata: { count: 1 },
+          timestamp: new Date(),
+        },
+      ],
+    })
+  } catch (error) {
+    Sentry.logger.error("Polar voice_creation ingest failed", {
+      orgId,
+      error,
+    })
   }
 
   return Response.json(

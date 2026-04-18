@@ -22,6 +22,9 @@ import {
 } from "@/components/ui/drawer"
 import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceCreateForm } from "./voice-create-form";
+import { useCheckout } from "@/features/billing/hooks/use-checkout";
+import { useCallback } from "react";
+import { toast } from "sonner";
 
 interface VoiceCreateDialogProps {
   children?: React.ReactNode;
@@ -36,6 +39,23 @@ export function VoiceCreateDialog({
 }: VoiceCreateDialogProps) {
   const isMobile = useIsMobile()
 
+  const { checkout } = useCheckout()
+
+  const handleError = useCallback(
+    (message: string) => {
+      if (message === "SUBSCRIPTION_REQUIRED") {
+        toast.error("Es necesario una suscripción", {
+          action: {
+            label: "Suscribirse",
+            onClick: () => checkout(),
+          }
+        })
+      } else {
+        toast.error(message)
+      }
+    }, [checkout],
+  )
+
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
@@ -49,6 +69,7 @@ export function VoiceCreateDialog({
           </DrawerHeader>
           <VoiceCreateForm
             scrollable
+            onError={handleError}
             footer={(submit) => (
               <DrawerFooter>
                 {submit}
@@ -73,7 +94,7 @@ export function VoiceCreateDialog({
             Sube o graba una muestra de audio para añadir una nueva voz a tu biblioteca.
           </DialogDescription>
         </DialogHeader>
-        <VoiceCreateForm scrollable/>
+        <VoiceCreateForm scrollable onError={handleError} />
       </DialogContent>
     </Dialog >
   )
