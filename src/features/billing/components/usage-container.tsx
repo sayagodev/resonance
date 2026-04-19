@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -5,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useCheckout } from "../hooks/use-checkout";
 import { useTRPC } from "@/trpc/client";
-import { SidebarMenuItem } from "@/components/ui/sidebar";
 
 function formatCurrency(cents: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -60,7 +61,7 @@ function UsageCard({
   const openPortal = useCallback(() => {
     portalMutation.mutate(undefined, {
       onSuccess: (data) => {
-        window.open(data.portalUrl, "_blank")
+        window.open(data.portalUrl, "_blank", "noopener,noreferrer")
       }
     })
   }, [portalMutation])
@@ -74,7 +75,7 @@ function UsageCard({
         <p className="text-xl font-bold tracking-tight text-foreground mt-1">
           {formatCurrency(estimatedCostCents)}
         </p>
-        <p className="text-xs text-muted-foregournd mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5">
           Estimación de este período
         </p>
       </div>

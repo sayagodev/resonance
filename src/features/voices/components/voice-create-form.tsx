@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
 import {
-  AlignLeft,
   AudioLines,
   Check,
   ChevronsUpDown,
@@ -19,7 +18,9 @@ import {
   Mic,
   Tag,
   Upload,
-  X
+  X,
+  Play,
+  Pause
 } from "lucide-react"
 
 import locales from "locale-codes"
@@ -113,7 +114,18 @@ function FileDropzone({
           <p className="truncate text-sm font-medium">{file.name}</p>
           <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
         </div>
-
+        <Button
+        type="button"
+        variant={"ghost"}
+        size={"icon-sm"}
+        onClick={togglePlay}
+        >
+        {isPlaying ? (
+          <Pause className="size-4" />
+        ): (
+          <Play className="size-4" />
+        )}
+        </Button>
         <Button
           type="button"
           variant={"ghost"}

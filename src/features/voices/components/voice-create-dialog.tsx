@@ -44,7 +44,7 @@ export function VoiceCreateDialog({
   const handleError = useCallback(
     (message: string) => {
       if (message === "SUBSCRIPTION_REQUIRED") {
-        toast.error("Es necesario una suscripción", {
+        toast.error("Es necesaria una suscripción", {
           action: {
             label: "Suscribirse",
             onClick: () => checkout(),

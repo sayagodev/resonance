@@ -1,4 +1,3 @@
-import { HistoryDrawer } from "@/features/text-to-speech/components/history-drawer";
 import { voicesSearchParamsCache } from "@/features/voices/lib/params";
 import { VoicesView } from "@/features/voices/views/voices-view";
 import { prefetch, trpc, HydrateClient } from "@/trpc/server";
