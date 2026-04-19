@@ -87,7 +87,7 @@ export function VoiceCreateDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="flex h-[95svh] flex-col">
+      <DialogContent className="flex max-h-[95svh] flex-col">
         <DialogHeader className="text-left">
           <DialogTitle>Crea tu voz personalizada</DialogTitle>
           <DialogDescription>
