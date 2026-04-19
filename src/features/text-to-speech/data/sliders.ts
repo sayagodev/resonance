@@ -18,7 +18,7 @@ export const sliders: Slider[] = [
     min: 0,
     max: 2,
     step: 0.1,
-    defaultValue: 0.8,
+    defaultValue: 0.35,
   },
   {
     id: "topP",
@@ -28,7 +28,7 @@ export const sliders: Slider[] = [
     min: 0,
     max: 1,
     step: 0.05,
-    defaultValue: 0.95,
+    defaultValue: 0.8,
   },
   {
     id: "topK",
@@ -38,7 +38,7 @@ export const sliders: Slider[] = [
     min: 1,
     max: 10000,
     step: 100,
-    defaultValue: 1000,
+    defaultValue: 50,
   },
   {
     id: "repetitionPenalty",
@@ -48,6 +48,6 @@ export const sliders: Slider[] = [
     min: 1,
     max: 2,
     step: 0.1,
-    defaultValue: 1.2,
+    defaultValue: 1.1,
   },
 ];

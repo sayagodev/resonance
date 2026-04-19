@@ -60,7 +60,11 @@ export function VoicePreviewMobile({
     const audio = audioRef.current;
     if (!audio) return;
 
-    isPlaying ? audio.pause() : audio.play();
+    if (isPlaying) {
+      audio.pause()
+    } else {
+      audio.play()
+    }
   }
 
   const handleDownload = () => {

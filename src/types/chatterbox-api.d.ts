@@ -3,7 +3,7 @@
 * Do not edit manually. Run `npm run sync-api` to regenerate.
 *
 * Generated from: https://sayagomain--chatterbox-tts-chatterbox-serve.modal.run/openapi.json
-* Generated at: 2026-04-08T16:18:01.926Z
+* Generated at: 2026-04-18T22:54:45.957Z
 */
   export interface paths {
     "/generate": {
@@ -41,24 +41,26 @@ export interface components {
             prompt: string;
             /** Voice Key */
             voice_key: string;
+            /** Language Id */
+            language_id?: string | null;
             /**
              * Temperature
-             * @default 0.8
+             * @default 0.35
              */
             temperature: number;
             /**
              * Top P
-             * @default 0.95
+             * @default 0.8
              */
             top_p: number;
             /**
              * Top K
-             * @default 1000
+             * @default 50
              */
             top_k: number;
             /**
              * Repetition Penalty
-             * @default 1.2
+             * @default 1.1
              */
             repetition_penalty: number;
             /**
@@ -66,6 +68,16 @@ export interface components {
              * @default true
              */
             norm_loudness: boolean;
+            /**
+             * Exaggeration
+             * @default 0.5
+             */
+            exaggeration: number;
+            /**
+             * Cfg Weight
+             * @default 0.5
+             */
+            cfg_weight: number;
         };
         /** ValidationError */
         ValidationError: {

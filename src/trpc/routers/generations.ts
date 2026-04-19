@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
-import z, { unknown } from "zod";
+import z from "zod";
+import { polar } from "@/lib/polar";
 import { TEXT_MAX_LEGTH } from "@/features/text-to-speech/data/constants";
 import { TRPCError } from "@trpc/server";
 import { chatterbox } from "@/lib/chatterbox-client";
@@ -47,13 +48,37 @@ export const generationsRouter = createTRPCRouter({
       z.object({
         text: z.string().min(1).max(TEXT_MAX_LEGTH),
         voiceId: z.string().min(1),
-        temperature: z.number().min(0).max(2).default(0.8),
-        topP: z.number().min(0).max(1).default(0.95),
-        topK: z.number().min(1).max(10000).default(1000),
-        repetitionPenalty: z.number().min(1).max(2).default(1.2),
+        temperature: z.number().min(0).max(2).default(0.35),
+        topP: z.number().min(0).max(1).default(0.8),
+        topK: z.number().min(1).max(10000).default(50),
+        repetitionPenalty: z.number().min(1).max(2).default(1.1),
       })
     )
     .mutation(async ({ input, ctx }) => {
+
+      // Check for active subscription before generation
+      try {
+        const customerState = await polar.customers.getStateExternal({
+          externalId: ctx.orgId,
+        })
+
+        const hasActiveSubscription =
+          (customerState.activeSubscriptions ?? []).length > 0;
+
+        if (!hasActiveSubscription) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "SUBSCRIPTION_REQUIRED",
+          })
+        }
+      } catch (err) {
+        if (err instanceof TRPCError) throw err;
+
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "SUBSCRIPTION_REQUIRED",
+        })
+      }
 
       const voice = await prisma.voice.findFirst({
         where: {
@@ -67,6 +92,7 @@ export const generationsRouter = createTRPCRouter({
           id: true,
           name: true,
           r2ObjectKey: true,
+          language: true,
         }
       });
 
@@ -84,15 +110,27 @@ export const generationsRouter = createTRPCRouter({
         })
       }
 
+      const languageId = (() => {
+        const raw = (voice.language || "en").trim().toLowerCase()
+        // allow "es-ES"/"en-US" -> "es"/"en"
+        const base = raw.includes("-") ? raw.split("-", 1)[0] : raw
+        // keep only likely ISO-639-1 codes
+        if (base.length >= 2 && base.length <= 8) return base
+        return "en"
+      })()
+
       const { data, error } = await chatterbox.POST("/generate", {
         body: {
           prompt: input.text,
           voice_key: voice.r2ObjectKey,
+          language_id: languageId,
           temperature: input.temperature,
           top_p: input.topP,
           top_k: input.topK,
           repetition_penalty: input.repetitionPenalty,
           norm_loudness: true,
+          exaggeration: 0.5,
+          cfg_weight: 0.5,
         },
         parseAs: "arrayBuffer",
       });
@@ -190,6 +228,22 @@ export const generationsRouter = createTRPCRouter({
           message: "Failed to store generated audio",
         });
       }
+
+      // Ingest usage event to Polar (fire-and-forget, don't block response)
+      polar.events
+        .ingest({
+          events: [
+            {
+              name: "tts_generation",
+              externalCustomerId: ctx.orgId,
+              metadata: { characters: input.text.length },
+              timestamp: new Date(),
+            },
+          ],
+        })
+        .catch(() => {
+          // Silently fail - don't break the use experience for metering errors
+        })
 
       return {
         id: generationId
